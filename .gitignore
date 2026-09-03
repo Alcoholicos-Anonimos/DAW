@@ -1,3 +1,6 @@
 node_modules/
 *.sql
 *pdf
+.env
+dist/
+*.tsbuildinfo
