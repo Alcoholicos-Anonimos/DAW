@@ -17,7 +17,7 @@ const currentDirectory = dirname(fileURLToPath(import.meta.url));
       envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule, UsuariosModule],
+      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
@@ -32,6 +32,7 @@ const currentDirectory = dirname(fileURLToPath(import.meta.url));
       }),
     }),
     AuthModule,
+    UsuariosModule,
   ],
   controllers: [AppController],
   providers: [AppService],
