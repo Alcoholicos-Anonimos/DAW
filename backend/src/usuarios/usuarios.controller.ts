@@ -10,12 +10,12 @@ export class UsuariosController {
 
     constructor(private usuarioService: UsuariosService){}
 
-    @Post('login')
+    /*@Post('login') --> Vane: LOGIN lo hace la clase AUTH
     @ApiOperation({ summary: 'Iniciar sesión como usuario' })
     @ApiBody({ type: LoginDTO })
     @ApiResponse({ status: 200, description: 'Inicio de sesión exitoso' })
     @ApiResponse({ status: 401, description: 'Credenciales inválidas' })
     async login(@Body() loginDto: LoginDTO) {
         return this.usuarioService.Login(loginDto.email, loginDto.clave);
-    }
+    }*/
 }

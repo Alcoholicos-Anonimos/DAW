@@ -7,6 +7,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UsuariosModule } from './usuarios/usuarios.module.js';
+import { MedicosModule } from './medicos/medicos.modules.js';
 
 const currentDirectory = dirname(fileURLToPath(import.meta.url));
 
@@ -33,6 +34,7 @@ const currentDirectory = dirname(fileURLToPath(import.meta.url));
     }),
     AuthModule,
     UsuariosModule,
+    MedicosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

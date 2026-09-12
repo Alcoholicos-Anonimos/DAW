@@ -2,7 +2,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Usuario } from './entities/usuario.entity.js';
+import { Usuario } from './usuario.entity.js';
 
 @Injectable()
 
@@ -17,7 +17,7 @@ export class UsuariosService {
     @InjectRepository(Usuario) private usuarioRepositorio: Repository<Usuario>) { }
 
 
-  async findByEmail(email: string) {
+  /*async findByEmail(email: string) { --> Vane: LOGIN lo hace la clase AUTH
     // Temporal: solo admin para pruebas
     if (email === 'grupoaa@correo.com') {
       return {
@@ -44,6 +44,6 @@ export class UsuariosService {
       return null;
     }
     return usuario;
-  }
+  }*/
 
 }
