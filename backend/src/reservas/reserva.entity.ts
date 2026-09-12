@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import type { Relation } from 'typeorm';
-import { EstadosReservas } from '../../common/enums/estados-reservas.enum.js';
-import { Medico } from '../../medicos/entities/medico.entity.js';
-import { Usuario } from '../../usuarios/entities/usuario.entity.js';
+import { EstadosReservas } from '../common/enums/estados-reservas.enum.js';
+import { Medico } from '../medicos/medicos.entity.js';
+import { Usuario } from '../usuarios/usuario.entity.js';
 
 @Entity({ name: 'reservas' })
 export class Reserva {

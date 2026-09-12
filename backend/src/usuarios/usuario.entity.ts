@@ -1,10 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn, OneToOne, OneToMany } from 'typeorm';
 import type { Relation } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { EstadosUsuarios } from '../../common/enums/estados-usuarios.enum.js';
-import { RolesUsuarios } from '../../common/enums/roles-usuarios.enum.js';
-import { Medico } from '../../medicos/entities/medico.entity.js';
-import { Reserva } from '../../reservas/entities/reserva.entity.js';
+import { EstadosUsuarios } from '../common/enums/estados-usuarios.enum.js';
+import { RolesUsuarios } from '../common/enums/roles-usuarios.enum.js';
+import { Medico } from '../medicos/medicos.entity.js';
+import { Reserva } from '../reservas/reserva.entity.js';
 
 @Entity({ name: 'usuarios' })
 export class Usuario {
