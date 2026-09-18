@@ -1,6 +1,4 @@
-
 import { ApiProperty } from '@nestjs/swagger';
-import { EstadosUsuarios } from '../../common/enums/estados-usuarios.enum.js';
 import { RolesUsuarios } from '../../common/enums/roles-usuarios.enum.js';
 
 export class MedicoResponseDTO {
@@ -20,8 +18,6 @@ export class MedicoResponseDTO {
       apellidos: 'Adam',
       email: 'grupoaa@correo.com',
       documento: '123456',
-      clave: '1234',
-      estado: 'ACTIVO',
       rol: 'MEDICO'
     }
   })
@@ -31,8 +27,6 @@ export class MedicoResponseDTO {
     apellidos: string;
     email: string;
     documento: string;
-    clave: string;
-    estado: EstadosUsuarios;
     rol: RolesUsuarios;
   };
 }

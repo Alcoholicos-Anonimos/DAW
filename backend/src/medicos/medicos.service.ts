@@ -2,31 +2,67 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Medico } from './medicos.entity.js';
+import { Reserva } from '../reservas/reserva.entity.js'; 
 import { EstadosReservas } from '../common/enums/estados-reservas.enum.js';
 
 @Injectable()
 export class MedicosService {
 
-    constructor(@InjectRepository(Medico) private medicoRepositorio: Repository<Medico>) { }
+    constructor(
+        @InjectRepository(Medico) private medicoRepositorio: Repository<Medico>,
+        @InjectRepository(Reserva) private reservaRepositorio: Repository<Reserva>,) { }
 
     async findById(id: number): Promise<Medico | null> {
         const medico = await this.medicoRepositorio.findOne({
             where: { id },  
         });
         return medico;
+        
     }
 
-    async listaTurnos(id_usuario: number, fecha: Date) : Promise<Medico['reservas']> {
-        //Instancio medico
-        const medico : Medico = this.medicoRepositorio.create({ idUsuario: id_usuario });
+    async listarMedicos(): Promise<Medico[]> {
+        return await this.medicoRepositorio.find({
+            relations: { usuario: true },
+            order: { id: 'ASC' },
+        });
+    }
 
-        //Me traigo las reservas del medico y las filtramos por fecha
-       return medico?.reservas?.filter(reserva => reserva.fechaHora.toDateString() === fecha.toDateString());
+    async actualizarValorConsulta(id: number, nuevoValor: number): Promise<Medico> {
+        const medico = await this.medicoRepositorio.findOne({ where: { id } });
+
+        if (!medico) {
+            throw new HttpException('Médico no encontrado', HttpStatus.NOT_FOUND);
+        }
+
+        medico.valorConsulta = nuevoValor;
+        return await this.medicoRepositorio.save(medico);
+    }
+
+    async listaTurnos(id_usuario: number, fecha: string): Promise<Reserva[]> {
+        const [y, m, d] = fecha.split('-').map(Number);
+        const fechaLocal = new Date(y, m - 1, d);
+
+        const medico = await this.medicoRepositorio.findOne({
+            where: { idUsuario: id_usuario },
+            relations: { reservas: true },
+        });
+
+        return (medico?.reservas ?? []).filter(reserva => {
+            const r = reserva.fechaHora;
+            return (
+                r.getFullYear() === fechaLocal.getFullYear() &&
+                r.getMonth() === fechaLocal.getMonth() &&
+                r.getDate() === fechaLocal.getDate()
+            );
+        });
     }
 
     async marcarTurno(id_Usuario: number, id_reserva: number, estado: EstadosReservas): Promise<boolean> {
-        // Instancio el medico
-        const medico : Medico = this.medicoRepositorio.create({ idUsuario: id_Usuario });
+       
+        const medico = await this.medicoRepositorio.findOne({
+            where: { idUsuario: id_Usuario },
+            relations: { reservas: true },
+        });
 
         //Busco su reserva por id
         const reserva = medico?.reservas?.find(reserva => reserva.id === id_reserva);
@@ -44,8 +80,8 @@ export class MedicosService {
             else  if(estado === EstadosReservas.AUSENTE) reserva.estado = EstadosReservas.AUSENTE;
                 else return false; //solo puedo cambiar la reserva a ATENDIDO o AUSENTE
         }
-        // Guardo los cambios
-        await this.medicoRepositorio.save(medico);
+        
+        await this.reservaRepositorio.save(reserva);
         return true;
     }
 

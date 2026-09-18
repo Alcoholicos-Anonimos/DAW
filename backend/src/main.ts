@@ -8,6 +8,8 @@ import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.setGlobalPrefix('api/v1');
   
   // 1. Validación global
   app.useGlobalPipes(
@@ -38,11 +40,11 @@ async function bootstrap() {
     .build();
   
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document); // ← Esto crea la ruta /api-docs
+  SwaggerModule.setup('api/v1', app, document); 
   // 5. Iniciar servidor
   const port = process.env.PORT || 3000;
   await app.listen(port);
   console.log(`Servidor: http://localhost:${port}`);
-  console.log(`Swagger: http://localhost:${port}/api-docs`);
+  console.log(`Swagger: http://localhost:${port}/api/v1`);
 }
 await bootstrap();
