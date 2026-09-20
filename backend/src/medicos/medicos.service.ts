@@ -3,11 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Medico } from './medicos.entity.js';
 import { EstadosReservas } from '../common/enums/estados-reservas.enum.js';
+import { Reserva } from '../reservas/reserva.entity.js';
 
 @Injectable()
 export class MedicosService {
 
-    constructor(@InjectRepository(Medico) private medicoRepositorio: Repository<Medico>) { }
+    constructor(@InjectRepository(Medico) private medicoRepositorio: Repository<Medico>,
+        @InjectRepository(Reserva) private reservaRepositorio: Repository<Reserva>) { }
 
     async findById(id: number): Promise<Medico | null> {
         const medico = await this.medicoRepositorio.findOne({
@@ -16,12 +18,31 @@ export class MedicosService {
         return medico;
     }
 
-    async listaTurnos(id_usuario: number, fecha: Date) : Promise<Medico['reservas']> {
-        //Instancio medico
-        const medico : Medico = this.medicoRepositorio.create({ idUsuario: id_usuario });
+    async listaTurnos(id_usuario: number, fecha: Date) : Promise<Reserva[]> {
+       const medico = await this.medicoRepositorio.findOne({
+            where: { idUsuario: id_usuario },
+            relations: { 
+                reservas: //trae ademas las reservas asociadas al medico
+                { paciente: true}}, // Trae ademas los pacientes de esas reservas
+            select:{
+                    id: true,
+                    idUsuario: true,
+                    reservas : {
+                        estado: true,
+                        paciente: true,
+                        fechaHora: true,
+                        valorConsulta: true
+                    }
+                }   
+            });
 
-        //Me traigo las reservas del medico y las filtramos por fecha
-       return medico?.reservas?.filter(reserva => reserva.fechaHora.toDateString() === fecha.toDateString());
+        if (!medico) {
+            throw new HttpException('Médico no encontrado', HttpStatus.NOT_FOUND);
+        }
+
+        return (medico.reservas ?? []).filter(
+            reserva => reserva.fechaHora.toDateString() === fecha.toDateString()
+        );
     }
 
     async marcarTurno(id_Usuario: number, id_reserva: number, estado: EstadosReservas): Promise<boolean> {

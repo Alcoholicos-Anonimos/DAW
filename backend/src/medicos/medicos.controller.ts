@@ -1,9 +1,11 @@
-import { Body, Controller, NotImplementedException, Post , Get, Req} from "@nestjs/common";
+import { Body, Controller, NotImplementedException, Post , Get, Req, Query} from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiOkResponse , ApiOperation, ApiResponse} from "@nestjs/swagger";
 import { MedicosService } from "./medicos.service.js";
 import { Medico } from "./medicos.entity.js";
 import { EstadosReservas } from "../common/enums/estados-reservas.enum.js";
 import { Reserva } from "../reservas/reserva.entity.js";
+import { ListaTurnosDTO } from "./dto/lista-turno.dto.js";
+import { MedicoListaReservasDTO } from "./dto/medico-lista-reservas.dto.js";
 
 @Controller("/medicos")
 export class MedicosController {
@@ -45,9 +47,20 @@ export class MedicosController {
           }
         }
       })
-    async listaTurnos(@Req() req: any, @Body() fecha: Date) : Promise<Medico['reservas']> {
+    async listaTurnos(@Req() req: any, @Body() query: ListaTurnosDTO) : Promise<MedicoListaReservasDTO[]> {
         const id_Usuario = req.user?.id;
-        return await this.medicosService.listaTurnos(id_Usuario, fecha);
+        const reservas = await this.medicosService.listaTurnos(id_Usuario, new Date(query.fecha));
+        
+        // Mapeo entidad a mi DTO de salida
+        return reservas.map(r => ({
+            id: r.id,
+            idMedico: r.medico.id,
+            estado: r.estado,
+            idPaciente: r.paciente.id,
+            fechaHora: r.fechaHora,
+            valorConsulta: r.valorConsulta
+        }));
+        
     }
   
     @Post("marcar-turno")
