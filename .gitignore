@@ -4,4 +4,4 @@ node_modules/
 .env
 dist/
 *.tsbuildinfo
-documentation/
+backend/documentation/

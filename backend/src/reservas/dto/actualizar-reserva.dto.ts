@@ -1,9 +1,13 @@
-
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsNotEmpty, IsString } from 'class-validator';
+import { IsIn, IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { EstadosReservas } from '../../common/enums/estados-reservas.enum.js';
 
 export class ActualizarReservaDTO {
+  @ApiProperty({ example: 1, description: 'ID de la reserva a marcar' })
+  @IsInt()
+  @IsNotEmpty({ message: 'El id de la reserva es requerido' })
+  id_reserva: number;
+
   @ApiProperty({ 
     enum: EstadosReservas,
     example: 'ATENDIDO',
