@@ -13,6 +13,7 @@ import { Roles } from '../auth/decorators/roles.decorator.js';
 import { RolesUsuarios } from '../common/enums/roles-usuarios.enum.js';
 
 import { UpdateValorConsultaDTO } from './dto/update-valor-consulta.dto.js';
+import { MarcarTurnoResponseDTO } from "./dto/respueta-marcar-turno.dto.js";
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller("/medicos")
@@ -86,9 +87,13 @@ export class MedicosController {
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Medico: Marcar turno como atendido o ausente' })
     @ApiBody({ type: ActualizarReservaDTO })
-    @ApiOkResponse({ description: 'Resultado de la operación', type: Boolean })
-    async marcarTurno(@Req() req: any, @Body() dto: ActualizarReservaDTO): Promise<boolean> {
+    @ApiOkResponse({ description: 'Resultado de la operación', type: MarcarTurnoResponseDTO  })
+    async marcarTurno(@Req() req: any, @Body() dto: ActualizarReservaDTO):  Promise<MarcarTurnoResponseDTO> {
         const id_Usuario = req.user.id;
-        return await this.medicosService.marcarTurno(id_Usuario, dto.id_reserva, dto.estado);
+        const reserva = await this.medicosService.marcarTurno(id_Usuario, dto.id_reserva, dto.estado);
+        return{
+            reserva,
+            estado:reserva.estado
+        }
     }
 }    
