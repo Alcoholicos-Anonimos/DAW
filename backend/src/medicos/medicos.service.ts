@@ -5,6 +5,7 @@ import { Medico } from './medicos.entity.js';
 import { Reserva } from '../reservas/reserva.entity.js'; 
 import { EstadosReservas } from '../common/enums/estados-reservas.enum.js';
 
+
 @Injectable()
 export class MedicosService {
 
@@ -57,7 +58,7 @@ export class MedicosService {
         });
     }
 
-    async marcarTurno(id_Usuario: number, id_reserva: number, estado: EstadosReservas): Promise<boolean> {
+    async marcarTurno(id_Usuario: number, id_reserva: number, estado: EstadosReservas): Promise<Reserva> {
        
         const medico = await this.medicoRepositorio.findOne({
             where: { idUsuario: id_Usuario },
@@ -71,18 +72,16 @@ export class MedicosService {
         }
 
         if(reserva.estado === EstadosReservas.ATENDIDO || reserva.estado === EstadosReservas.AUSENTE || reserva.estado === EstadosReservas.CANCELADO){ 
-            return false; //solo puedo cambiar la reserva si esta en estado ACTIVO
+                   throw new HttpException( 'Solo se puede modificar una reserva en estado ACTIVO', HttpStatus.CONFLICT,  ); //solo puedo cambiar la reserva si esta en estado ACTIVO
         }
 
-        if(reserva.estado === EstadosReservas.ACTIVO)
-        {
-            if(estado === EstadosReservas.ATENDIDO) reserva.estado = EstadosReservas.ATENDIDO;
-            else  if(estado === EstadosReservas.AUSENTE) reserva.estado = EstadosReservas.AUSENTE;
-                else return false; //solo puedo cambiar la reserva a ATENDIDO o AUSENTE
-        }
+        //el unico estado que llega hasta aquie es ACTIVO
+        if(estado === EstadosReservas.ATENDIDO) reserva.estado = EstadosReservas.ATENDIDO;
+        else  if(estado === EstadosReservas.AUSENTE) reserva.estado = EstadosReservas.AUSENTE;
+            else throw new HttpException( 'Solo se puede marcar la reserva como ATENDIDO o AUSENTE', HttpStatus.BAD_REQUEST, ); //solo puedo cambiar la reserva a ATENDIDO o AUSENTE
+    
         
-        await this.reservaRepositorio.save(reserva);
-        return true;
+         return await this.reservaRepositorio.save(reserva);
     }
 
 }
