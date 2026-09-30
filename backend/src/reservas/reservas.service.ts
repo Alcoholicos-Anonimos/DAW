@@ -62,6 +62,11 @@ export class ReservasService {
       throw new NotFoundException('Paciente no encontrado');
     }
 
+    // 4b. Validar que el usuario sea realmente un paciente
+    if (paciente.rol !== RolesUsuarios.PACIENTE) {
+      throw new BadRequestException('El usuario indicado no es un paciente');
+    }
+
     // Si el que llama es un paciente, solo puede sacar turnos para sí mismo
     if (
       usuarioSolicitante?.rol === RolesUsuarios.PACIENTE &&
