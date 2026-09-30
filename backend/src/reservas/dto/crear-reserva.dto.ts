@@ -13,8 +13,8 @@ export class CrearReservaDTO {
   id_paciente: number;
 
   @ApiProperty({ 
-    example: '2026-09-20T10:00:00.000Z', 
-    description: 'Fecha y hora del turno en formato ISO' 
+    example: '2026-10-05T10:00:00', 
+    description: 'Fecha y hora del turno en hora de Argentina, sin Z (YYYY-MM-DDTHH:mm:ss)' 
   })
   @IsDateString({}, { message: 'La fecha y hora debe ser un string ISO 8601 válido' })
   @IsNotEmpty({ message: 'La fecha y hora es requerida' })
