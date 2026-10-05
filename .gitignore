@@ -5,6 +5,4 @@ node_modules/
 dist/
 *.tsbuildinfo
 backend/documentation/
-
-# Documentación compodoc
-backend/documentation/
+frontend/documentation/
