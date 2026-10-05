@@ -28,6 +28,14 @@ export class ReservasService {
    * Crear una reserva aplicando todas las reglas de negocio
    */
   async crearReserva(dto: CrearReservaDTO, usuarioSolicitante: any): Promise<Reserva> {
+    // 0. Permiso primero: un paciente solo puede sacar turnos para sí mismo
+    if (
+      usuarioSolicitante?.rol === RolesUsuarios.PACIENTE &&
+      usuarioSolicitante?.id !== dto.id_paciente
+    ) {
+      throw new ForbiddenException('Un paciente solo puede reservar turnos para sí mismo');
+    }
+
     const fechaTurno = new Date(dto.fecha_hora);
     const ahora = new Date();
 
@@ -44,9 +52,10 @@ export class ReservasService {
     }
 
     // 3. Validar horarios: bloques cerrados de 1h entre 08:00 y 16:00 (último turno a las 15:00)
-    const hora = fechaTurno.getUTCHours();
-    const minutos = fechaTurno.getUTCMinutes();
-    const segundos = fechaTurno.getUTCSeconds();
+    // Se usa la hora local del servidor (Argentina). Enviar la fecha sin Z: YYYY-MM-DDTHH:mm:ss
+    const hora = fechaTurno.getHours();
+    const minutos = fechaTurno.getMinutes();
+    const segundos = fechaTurno.getSeconds();
 
     if (minutos !== 0 || segundos !== 0) {
       throw new BadRequestException('Los turnos deben comenzar en punto (ej: 08:00, 09:00)');
@@ -62,12 +71,9 @@ export class ReservasService {
       throw new NotFoundException('Paciente no encontrado');
     }
 
-    // Si el que llama es un paciente, solo puede sacar turnos para sí mismo
-    if (
-      usuarioSolicitante?.rol === RolesUsuarios.PACIENTE &&
-      usuarioSolicitante?.id !== dto.id_paciente
-    ) {
-      throw new ForbiddenException('Un paciente solo puede reservar turnos para sí mismo');
+    // 4b. Validar que el usuario sea realmente un paciente
+    if (paciente.rol !== RolesUsuarios.PACIENTE) {
+      throw new BadRequestException('El usuario indicado no es un paciente');
     }
 
     // 5. Validar que el médico exista y obtener su valor de consulta actual
@@ -87,6 +93,19 @@ export class ReservasService {
 
     if (turnoExistente) {
       throw new BadRequestException('El médico ya tiene un turno reservado en ese horario');
+    }
+
+    // 6b. Validar que el paciente no tenga otro turno ACTIVO en esa misma fecha y hora
+    const turnoPaciente = await this.reservaRepo.findOne({
+      where: {
+        paciente: { id: paciente.id } as any,
+        fechaHora: fechaTurno,
+        estado: EstadosReservas.ACTIVO,
+      },
+    });
+
+    if (turnoPaciente) {
+      throw new BadRequestException('El paciente ya tiene un turno reservado en ese horario');
     }
 
     // 7. Congelar el valor de consulta y guardar la reserva
@@ -116,6 +135,14 @@ export class ReservasService {
       throw new NotFoundException('Reserva no encontrada');
     }
 
+    // Permiso primero: un paciente solo puede cancelar sus propias reservas
+    if (
+      usuarioSolicitante?.rol === RolesUsuarios.PACIENTE &&
+      reserva.paciente?.id !== usuarioSolicitante?.id
+    ) {
+      throw new ForbiddenException('No podés cancelar la reserva de otro paciente');
+    }
+
     if (reserva.estado !== EstadosReservas.ACTIVO) {
       throw new BadRequestException(`No se puede cancelar una reserva con estado ${reserva.estado}`);
     }
@@ -131,10 +158,6 @@ export class ReservasService {
     } 
     // Regla Paciente: puede cancelar solo hasta el día anterior
     else if (usuarioSolicitante?.rol === RolesUsuarios.PACIENTE) {
-      if (reserva.paciente?.id !== usuarioSolicitante?.id) {
-        throw new ForbiddenException('No podés cancelar la reserva de otro paciente');
-      }
-
       // Comparar fechas a nivel día calendario
       const fechaDiaTurno = new Date(fechaTurno.getFullYear(), fechaTurno.getMonth(), fechaTurno.getDate());
       const fechaDiaHoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());

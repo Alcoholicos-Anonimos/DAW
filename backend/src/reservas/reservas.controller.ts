@@ -56,7 +56,7 @@ export class ReservasController {
    * Listar reservas del paciente o todas si es administrador
    */
 
-  @Roles(RolesUsuarios.PACIENTE, RolesUsuarios.MEDICO, RolesUsuarios.ADMINISTRADOR)   // ← nueva
+  @Roles(RolesUsuarios.PACIENTE, RolesUsuarios.ADMINISTRADOR)
     
   @Get()
   @ApiOperation({ summary: 'Listar reservas según el rol del usuario autenticado' })
