@@ -62,7 +62,8 @@ export class Login {
                 this.router.navigateByUrl("/reservas");
             },
             error: (err)=>{
-                this.mostrarError("Ha ocurrido un error al iniciar sesión. Verifique las credenciales ingresadas")
+                 this.mostrarError(err.error)
+                //this.mostrarError("Ha ocurrido un error al iniciar sesión. Verifique las credenciales ingresadas")
             }
         });
 

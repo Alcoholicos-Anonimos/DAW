@@ -12,7 +12,7 @@ export class LoginApiClient{
     iniciarSesion(email: string, clave: string): Observable<{accessToken: string}>{
 
         //////// http://localhost:3000 lo toma de proxy.conf.json
-        const url = "api/v1/auth/login";
+        const url = "/api/v1/auth/login";
         return this.httpClient.post<{accessToken:string}>(url, {email, clave});
 
     }
