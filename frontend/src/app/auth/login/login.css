@@ -9,24 +9,37 @@
 #main {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
-    height: 55vh;
-    max-width: 20rem;
-    width: 80vw;
-    background-color: lightcyan;
-    border-radius: 25px;
+    max-width: 24rem;
+    width: 90vw;
+    padding: 1rem 1.5rem 1.5rem;
+    background-color: #ffffff;
+    border: 1px solid #dce6e6;
+    border-radius: 12px;
 }
 
-#nombre{
-    margin-bottom: 1rem;
+mat-card-content {
+    display: flex;
+    flex-direction: column;
 }
 
-#clave{
-    margin-bottom: 1rem;
+mat-form-field {
+    width: 100%;
+    margin-bottom: 0.5rem;
 }
 
-#header{
+#header {
     text-align: center;
-    color: black;
+    width: 100%;
+    color: var(--clinica-primary-dark, #0b4f4f);
+}
+
+mat-card-actions {
+    display: flex;
+    justify-content: center;
+}
+
+mat-card-actions button {
+    width: 100%;
 }

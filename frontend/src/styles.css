@@ -1,1 +1,25 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos globales — paleta del mockup (teal clínico) */
+:root {
+  --clinica-primary: #0e6b6b;
+  --clinica-primary-dark: #0b4f4f;
+  --clinica-ink: #12292b;
+  --clinica-surface: #f3f6f5;
+  --clinica-bg: #faf9f5;
+  --clinica-muted: #4a5f61;
+  --clinica-line: #b8c7c8;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--clinica-bg);
+  color: var(--clinica-ink);
+}
+
+a {
+  color: var(--clinica-primary);
+}

@@ -11,8 +11,8 @@ export class LoginApiClient{
 
     iniciarSesion(email: string, clave: string): Observable<{accessToken: string}>{
 
-        //////// TENEMOS QUE VER COMO PONER EL LOCAL HOST SIN HARDCODEAR
-        const url = "http://localhost:3000/api/v1/auth/login";
+        //////// http://localhost:3000 lo toma de proxy.conf.json
+        const url = "api/v1/auth/login";
         return this.httpClient.post<{accessToken:string}>(url, {email, clave});
 
     }

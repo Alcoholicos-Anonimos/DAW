@@ -1,8 +1,26 @@
-<form [formGroup]="form">
-    <div id="main">
-        <h2 id="header">Sistema de turnos</h2>
-        <input pInputText id="email" type="text" placeholder="Email de usuario" formControlName="email" />
-        <p-password id="clave" formControlName="clave" [feedback]="false" autocomplete="off" placeholder="Clave de acceso"/>
-        <p-button label="Iniciar sesión" (click)="iniciarSesion()"/>
-    </div>
+<form [formGroup]="form" (ngSubmit)="iniciarSesion()">
+    <mat-card id="main">
+        <mat-card-header>
+            <mat-card-title id="header">Sistema de turnos</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-form-field appearance="outline">
+                <mat-label>Email de usuario</mat-label>
+                <input matInput id="email" type="text" formControlName="email" autocomplete="username" />
+                <mat-error>Campo requerido</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Clave de acceso</mat-label>
+                <input matInput id="clave" [type]="verClave ? 'text' : 'password'" formControlName="clave"
+                    autocomplete="current-password" />
+                <button mat-icon-button matSuffix type="button" (click)="verClave = !verClave">
+                    <mat-icon>{{ verClave ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error>Campo requerido</mat-error>
+            </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button color="primary" type="submit">Iniciar sesión</button>
+        </mat-card-actions>
+    </mat-card>
 </form>

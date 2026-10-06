@@ -1,22 +1,32 @@
 import { Component, inject } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MessageService } from "primeng/api";
 import { LoginApiClient } from "./login-api-client";
 import { AuthStore } from "../auth-store";
 import { Router } from "@angular/router";
-import { Button } from "primeng/button";
-import { Password } from "primeng/password";
-import { InputText } from "primeng/inputtext";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 
 @Component({
     selector: "app-login",
     templateUrl: "./login.html",
     styleUrl: "./login.css",
-    imports: [ReactiveFormsModule, InputText, Password, Button]
+    imports: [
+        ReactiveFormsModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSnackBarModule
+    ]
 })
 export class Login {
 
-    private readonly messageService: MessageService = inject(MessageService)
+    private readonly snackBar: MatSnackBar = inject(MatSnackBar);
 
     private readonly loginApiClient: LoginApiClient = inject(LoginApiClient);
 
@@ -24,15 +34,21 @@ export class Login {
 
     private readonly router: Router = inject(Router)
 
+    verClave = false;
+
     form: FormGroup = new FormGroup({
         email: new FormControl(null, Validators.required),
         clave: new FormControl(null, Validators.required)
     });
 
+    mostrarError(mensaje: string) {
+        this.snackBar.open(mensaje, "Cerrar", { duration: 5000 });
+    }
+
     iniciarSesion() {
 
         if (!this.form.valid) {
-            this.messageService.add({ severity: "error", summary: "Es necesario completar todos los campos del formulario para avanzar" })
+            this.mostrarError("Es necesario completar todos los campos del formulario para avanzar")
             return
         }
 
@@ -46,8 +62,7 @@ export class Login {
                 this.router.navigateByUrl("/reservas");
             },
             error: (err)=>{
-                //this.messageService.add({severity: "error", summary: err.error.message})
-                this.messageService.add({severity: "error", summary: "Ha ocurrido un error al iniciar sesión. Verifique las credenciales ingresadas"})
+                this.mostrarError("Ha ocurrido un error al iniciar sesión. Verifique las credenciales ingresadas")
             }
         });
 
