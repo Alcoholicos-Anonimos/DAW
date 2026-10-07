@@ -16,9 +16,24 @@ export class AuthStore {
         return sessionStorage.getItem("accessToken");
     }
 
+    estaAutenticado(): boolean {
+        return this.obtenerToken() !== null;
+    }
+
+    obtenerRol(): string | null {
+        const token = this.obtenerToken();
+
+        if (!token) {
+            return null;
+        }
+
+        const payload = JSON.parse(atob(token.split(".")[1]));
+
+        return payload.rol;
+    }
+
     cerrarSesion(): void {
         sessionStorage.removeItem("accessToken");
         this.router.navigateByUrl("/login");
     }
-
 }
