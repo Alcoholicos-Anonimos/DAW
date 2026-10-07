@@ -1,0 +1,28 @@
+ <h1>Bienvenidos a la clínica {{ title() }}</h1>
+
+<form [formGroup]="form" (ngSubmit)="iniciarSesion()">
+    <mat-card id="main">
+        <mat-card-header>
+            <mat-card-title id="header">Iniciar sesión</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-form-field appearance="outline">
+                <mat-label>Email de usuario</mat-label>
+                <input matInput id="email" type="text" formControlName="email" autocomplete="username" />
+                <mat-error>Campo requerido</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Clave</mat-label>
+                <input matInput id="clave" [type]="verClave ? 'text' : 'password'" formControlName="clave"
+                    autocomplete="current-password" />
+                <button mat-icon-button matSuffix type="button" (click)="verClave = !verClave">
+                    <mat-icon>{{ verClave ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error>Campo requerido</mat-error>
+            </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button color="primary" type="submit">Ingresar</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

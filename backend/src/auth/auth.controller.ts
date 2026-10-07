@@ -17,7 +17,7 @@ export class AuthController {
     description: 'Inicio de sesión exitoso',
     schema: {
       example: {
-        access_token: 'eyJhbGciOiJIUzI1NiIs...',
+        accessToken: 'eyJhbGciOiJIUzI1NiIs...',
         usuario: {
           id: 1,
           email: 'grupoaa@correo.com',

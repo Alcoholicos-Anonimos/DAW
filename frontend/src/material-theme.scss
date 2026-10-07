@@ -1,0 +1,113 @@
+// Tema global Angular Material (M3) — paleta Teal clínico del mockup.
+// Regla: los componentes Material resuelven todo con
+//   var(--mat-<token>, var(--mat-sys-<rol>))
+// así que fijar --mat-sys-* en <html> pinta TODA la app (botones, inputs,
+// tabs, dialog, snackbar, datepicker, table, etc.).
+// Fuente: https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+
+  @include mat.theme((
+    color: (
+      primary: mat.$cyan-palette,
+      theme-type: light,
+    ),
+    typography: Manrope,
+    density: 0,
+  ));
+
+  // Paleta del mockup (§1 lineamientos). Los valores de acá pisan a los
+  // generados arriba porque se emiten después en el mismo bloque.
+  @include mat.theme-overrides((
+    // Primary teal — botones principales, header, acciones
+    primary: #0e6b6b,
+    on-primary: #ffffff,
+    primary-container: #d1ede8,
+    on-primary-container: #0b4f4f,
+    inverse-primary: #7fcfcf,
+
+    // Primary oscuro — hover, toolbar, sidenav activo
+    secondary: #0b4f4f,
+    on-secondary: #ffffff,
+    secondary-container: #d1ede8,
+    on-secondary-container: #0b4f4f,
+
+    // Texto secundario / muted
+    tertiary: #4a5f61,
+    on-tertiary: #ffffff,
+    tertiary-container: #e1efee,
+    on-tertiary-container: #12292b,
+
+    // Errores y cancelar (mapeo de color=warn)
+    error: #9b2c1d,
+    on-error: #ffffff,
+    error-container: #fdecea,
+    on-error-container: #9b2c1d,
+
+    // Superficies — fondo app cálido + tarjetas
+    background: #faf9f5,
+    on-background: #12292b,
+    surface: #f3f6f5,
+    surface-bright: #faf9f5,
+    surface-dim: #d6dbdb,
+    surface-container-lowest: #ffffff,
+    surface-container-low: #ffffff,
+    surface-container: #f3f6f5,
+    surface-container-high: #edf2f1,
+    surface-container-highest: #e6eceb,
+    on-surface: #12292b,
+    on-surface-variant: #4a5f61,
+
+    // Bordes — inputs, dividers, tablas
+    outline: #b8c7c8,
+    outline-variant: #dce6e6,
+
+    // Inversos (tooltips, snackbars oscuros)
+    inverse-surface: #12292b,
+    inverse-on-surface: #f3f6f5,
+
+    shadow: #000000,
+    scrim: #000000,
+  ));
+
+  // ---- Defaults de componentes → paleta de la guía ----
+  // En M3 los inputs color="primary"/color="warn" no pintan nada, así que el
+  // color por defecto se fija acá con los tokens de cada componente.
+
+  // mat-raised-button (Ingresar, Confirmar, Guardar, Buscar) = teal sólido.
+  // Sin esto M3 lo pinta con --mat-sys-surface (gris) y solo el texto teal.
+  --mat-button-protected-container-color: #0e6b6b;
+  --mat-button-protected-label-text-color: #ffffff;
+  --mat-button-protected-state-layer-color: #ffffff;
+  --mat-button-protected-ripple-color: #ffffff;
+
+  // mat-toolbar (header) = primary oscuro + texto blanco.
+  --mat-toolbar-container-background-color: #0b4f4f;
+  --mat-toolbar-container-text-color: #ffffff;
+  // Iconos (logout, acciones) dentro del toolbar, para que se lean sobre oscuro.
+  --mat-icon-button-icon-color: #ffffff;
+  --mat-icon-button-state-layer-color: #ffffff;
+}
+
+// Hover del botón principal = primary oscuro (guía §1: "Primary oscuro: Hover").
+// Va con :not(:disabled):hover para ganarle por especificidad a la regla de
+// Material (.mat-mdc-raised-button:not(:disabled)), sin importar el orden.
+.mat-mdc-raised-button:not(:disabled):hover {
+  background-color: #0b4f4f;
+}
+
+body {
+  // Siempre tema claro (el mockup no tiene dark mode).
+  color-scheme: light;
+
+  // Fondo cálido + tinta teal del mockup.
+  background-color: #faf9f5;
+  color: #12292b;
+  font: var(--mat-sys-body-medium);
+
+  // Reset del margen del user agent.
+  margin: 0;
+  height: 100%;
+}

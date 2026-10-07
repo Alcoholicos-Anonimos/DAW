@@ -1,0 +1,37 @@
+<mat-toolbar color="primary">
+  <mat-icon aria-hidden="true">local_hospital</mat-icon>
+  <span>Clínica Acme</span>
+  <span class="espaciador"></span>
+  <span class="identidad">{{ nombre }} · {{ rol }}</span>
+  <button
+    mat-icon-button
+    type="button"
+    aria-label="Cerrar sesión"
+    matTooltip="Cerrar sesión"
+    (click)="cerrarSesion()"
+  >
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+
+<mat-sidenav-container class="contenedor">
+  <mat-sidenav mode="side" opened class="sidenav">
+    <mat-nav-list>
+      @for (link of links; track link.ruta) {
+        <a
+          mat-list-item
+          [routerLink]="link.ruta"
+          routerLinkActive="activo"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          {{ link.texto }}
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <main class="contenido">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

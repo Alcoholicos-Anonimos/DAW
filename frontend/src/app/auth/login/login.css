@@ -1,0 +1,45 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+#main {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    max-width: 24rem;
+    width: 90vw;
+    padding: 1rem 1.5rem 1.5rem;
+    background-color: #ffffff;
+    border: 1px solid #dce6e6;
+    border-radius: 12px;
+}
+
+mat-card-content {
+    display: flex;
+    flex-direction: column;
+}
+
+mat-form-field {
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+#header {
+    text-align: center;
+    width: 100%;
+    color: var(--clinica-primary-dark, #0b4f4f);
+}
+
+mat-card-actions {
+    display: flex;
+    justify-content: center;
+}
+
+mat-card-actions button {
+    width: 100%;
+}
