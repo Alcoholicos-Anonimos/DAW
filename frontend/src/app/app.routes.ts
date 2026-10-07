@@ -3,9 +3,11 @@ import { Login } from './auth/login/login';
 import { Reservas } from './reservas/reservas';
 import { AuthGuard } from './auth/auth-guard';
 import { RoleGuard } from './auth/role-guard';
-import { Medicos } from './medicos/medicos';
+import { Layout } from './shared/layout/layout';
 
 /*
+import { Medicos } from './medicos/medicos';
+
 import { MisTurnos } from './paciente/mis-turnos/mis-turnos';
 import { Reservar } from './reservas/reservar/reservar';
 import { Agenda } from './medico/agenda/agenda';
@@ -20,11 +22,13 @@ export const routes: Routes = [
 
   {
     path: 'reservas',
-    component: Reservas
+    component: Layout,
+      children: [ { path: '', component: Reservas } ]
   },
 
   {
     path: 'paciente',
+    component: Layout,
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['PACIENTE'] },
     children: [
@@ -41,6 +45,7 @@ export const routes: Routes = [
 
   {
     path: 'medico',
+    component: Layout,
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['MEDICO'] },
     children: [
@@ -53,6 +58,7 @@ export const routes: Routes = [
 
   {
     path: 'admin',
+    component: Layout,
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['ADMINISTRADOR'] },
     children: [

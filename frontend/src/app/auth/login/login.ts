@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { LoginApiClient } from "./login-api-client";
 import { AuthStore } from "../auth-store";
@@ -26,6 +26,8 @@ import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 })
 export class Login {
 
+    protected readonly title = signal('Acme');
+
     private readonly snackBar: MatSnackBar = inject(MatSnackBar);
 
     private readonly loginApiClient: LoginApiClient = inject(LoginApiClient);
@@ -44,7 +46,7 @@ export class Login {
     mostrarError(mensaje: string) {
         this.snackBar.open(mensaje, "Cerrar", { duration: 5000 });
     }
-
+    
     iniciarSesion() {
 
         if (!this.form.valid) {

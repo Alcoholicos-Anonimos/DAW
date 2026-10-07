@@ -32,6 +32,17 @@ export class AuthStore {
         return payload.rol;
     }
 
+    obtenerNombre(): string | null {
+        const token = this.obtenerToken();  
+        if(!token) {
+            return null;
+        }
+
+        const payload = JSON.parse(atob(token.split(".")[1]));
+
+        return payload.nombre;
+    }
+
     cerrarSesion(): void {
         sessionStorage.removeItem("accessToken");
         this.router.navigateByUrl("/login");
