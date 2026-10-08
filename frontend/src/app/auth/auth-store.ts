@@ -45,16 +45,19 @@ export class AuthStore {
     }
 
     obtenerNombre(): string | null {
-        const token = this.obtenerToken();  
-        if(!token) {
-            return null;
-        }
-
-        const payload = JSON.parse(atob(token.split(".")[1]));
-
-
-        return payload.nombres;
+    const token = this.obtenerToken();  
+    if(!token) {
+        return null;
     }
+
+    const payload = JSON.parse(
+        new TextDecoder().decode(
+            Uint8Array.from(atob(token.split(".")[1]), c => c.charCodeAt(0))
+        )
+    );
+
+    return payload.nombres;
+}
 
     cerrarSesion(): void {
         sessionStorage.removeItem("accessToken");
