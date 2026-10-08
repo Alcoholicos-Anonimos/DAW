@@ -1,10 +1,24 @@
-<h1>Mis turnos</h1>
+ <h1>Mis turnos</h1>
 
+  <p>En esta sección puede ver el listado de turnos que ha reservado.</p>
+  
+  <div class="filtro-estados">
+     <p>Estado:</p> 
+    <mat-select [(ngModel)]="selectedValue" (ngModelChange)="filtrarTurnos()" name="estados">
+      @for (estado  of estados; track estado) {
+        <mat-option [value]="estado">{{estado}}</mat-option>
+      }
+    </mat-select>
+  </div>
+  <br>
+  <mat-divider></mat-divider>
+<mat-card>
+  
 <mat-table [dataSource]="turnos" matSort>
 
   <!-- Fecha/Hora -->
   <ng-container matColumnDef="fechaHora">
-    <mat-header-cell *matHeaderCellDef>Fecha/Hora</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>Fecha y Hora</mat-header-cell>
     <mat-cell *matCellDef="let t">
       {{ t.fechaHora | date:'dd/MM/yyyy HH:mm' }}
     </mat-cell>
@@ -14,8 +28,7 @@
   <ng-container matColumnDef="medico">
     <mat-header-cell *matHeaderCellDef>Médico</mat-header-cell>
     <mat-cell *matCellDef="let t">
-      Dr.{{ t.medico.usuario.nombres }}
-      {{ t.medico.usuario.apellidos }}
+      Dr. {{ t.medico.usuario.apellidos }} {{ t.medico.usuario.nombres }}
     </mat-cell>
   </ng-container>
 
@@ -40,13 +53,12 @@
     <mat-header-cell *matHeaderCellDef>Acción</mat-header-cell>
     <mat-cell *matCellDef="let t">
       <button
-       
         mat-stroked-button
         color="warn"
         [disabled]="!puedeCancelarPaciente(t)"
         matTooltip="Solo hasta el día anterior"
         (click)="confirmarCancelar(t)">
-        Cancelar
+        Cancelar turno
       </button>
     </mat-cell>
   </ng-container>
@@ -62,3 +74,4 @@
 </mat-table>
 
 <mat-paginator [pageSize]="10"></mat-paginator>
+<mat-card-footer><p>Solo se pueden cancelar turnos con al menos 24 horas de antelación.</p></mat-card-footer>

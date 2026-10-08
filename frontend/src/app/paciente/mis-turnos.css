@@ -1,0 +1,13 @@
+.filtro-estados {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filtro-estados p {
+  margin: 0;
+}
+
+.filtro-estados mat-select {
+  width: 200px;
+}

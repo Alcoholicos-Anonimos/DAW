@@ -8,11 +8,14 @@ import { Observable } from 'rxjs';
 })
 export class PacienteService {
 
-    private readonly httpClient: HttpClient = inject(HttpClient)
+  private readonly httpClient: HttpClient = inject(HttpClient)
 
-   getTurnos(): Observable<any> {
-    return this.httpClient.get<any>('reservas');
+  getTurnos(): Observable<any> {
+    return this.httpClient.get<any>('/api/v1/reservas');
   }
 
-  
+  cancelarReserva(turnoId: number): Observable<any> {
+    return this.httpClient.patch<any>(`/api/v1/reservas/${turnoId}/cancelar`, {});
+  }
+
 }
