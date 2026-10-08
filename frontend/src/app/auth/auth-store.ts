@@ -16,6 +16,18 @@ export class AuthStore {
         return sessionStorage.getItem("accessToken");
     }
 
+    obtenerEmail(): string | null{
+        const token = this.obtenerToken();
+        
+        if (!token) {
+            return null;
+        }
+
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        return payload.email;
+    }
+
+   
     estaAutenticado(): boolean {
         return this.obtenerToken() !== null;
     }
@@ -40,7 +52,8 @@ export class AuthStore {
 
         const payload = JSON.parse(atob(token.split(".")[1]));
 
-        return payload.nombre;
+
+        return payload.nombres;
     }
 
     cerrarSesion(): void {
