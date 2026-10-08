@@ -4,6 +4,7 @@ import { Reservas } from './reservas/reservas';
 import { AuthGuard } from './auth/auth-guard';
 import { RoleGuard } from './auth/role-guard';
 import { Layout } from './shared/layout/layout';
+import { MisTurnos } from './paciente/mis-turnos';
 
 /*
 import { Medicos } from './medicos/medicos';
@@ -32,10 +33,10 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['PACIENTE'] },
     children: [
-     /* {
+     {
         path: 'mis-turnos',
         component: MisTurnos
-      },*/
+      },
       {
         path: 'reservar',
         component: Reservas

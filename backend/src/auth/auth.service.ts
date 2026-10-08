@@ -29,7 +29,7 @@ export class AuthService {
       throw new ForbiddenException('El usuario no está activo');
     }
 
-    const payload = { sub: usuario.id, email: usuario.email, rol: usuario.rol };
+    const payload = { sub: usuario.id, email: usuario.email, rol: usuario.rol , nombres: usuario.apellidos + ' ' + usuario.nombres  };
 
     return {
       accessToken: this.jwtService.sign(payload),
