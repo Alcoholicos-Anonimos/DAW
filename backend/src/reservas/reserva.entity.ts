@@ -4,12 +4,13 @@ import { EstadosReservas } from '../common/enums/estados-reservas.enum.js';
 import { Medico } from '../medicos/medicos.entity.js';
 import { Usuario } from '../usuarios/usuario.entity.js';
 
+
 @Entity({ name: 'reservas' })
 export class Reserva {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'fecha_hora', type: 'timestamp' })
+  @Column({ name: 'fecha_hora', type: 'timestamp without time zone', })
   fechaHora: Date;
 
   @Column({

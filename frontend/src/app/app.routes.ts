@@ -7,12 +7,7 @@ import { Layout } from './shared/layout/layout';
 import { MisTurnos } from './paciente/mis-turnos';
 import { Agenda } from './medico/agenda';
 
-/*
-import { Medicos } from './medicos/medicos';
-
-import { MisTurnos } from './paciente/mis-turnos/mis-turnos';
-import { Reservar } from './reservas/reservar/reservar';
-import { Valor } from './admin/valor-consulta/valor-consulta';*/
+/* para pantalla 5: import { Valor } from './admin/valor-consulta/valor-consulta';*/
 
 export const routes: Routes = [
 
@@ -20,13 +15,6 @@ export const routes: Routes = [
     path: 'login',
     component: Login
   },
-
-  {
-    path: 'reservas',
-    component: Layout,
-      children: [ { path: '', component: Reservas } ]
-  },
-
   {
     path: 'paciente',
     component: Layout,
@@ -67,6 +55,11 @@ export const routes: Routes = [
         path: 'reservar',
         component: Reservas
       },
+       {
+        path: 'mis-turnos',
+        component: MisTurnos
+      }
+
      /* {
         path: 'valor-consulta',
         component: Valor

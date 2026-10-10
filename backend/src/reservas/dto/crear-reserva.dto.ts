@@ -19,4 +19,12 @@ export class CrearReservaDTO {
   @IsDateString({}, { message: 'La fecha y hora debe ser un string ISO 8601 válido' })
   @IsNotEmpty({ message: 'La fecha y hora es requerida' })
   fecha_hora: string;
+
+  @ApiProperty({ 
+    example: 15000, 
+    description: 'Valor de consulta vigente del médico al momento de reservar' 
+  })
+  @IsInt({ message: 'El valor_consulta debe ser un número entero' })
+  @IsNotEmpty({ message: 'El valor_consulta es requerido' })
+  valor_consulta: number;
 }

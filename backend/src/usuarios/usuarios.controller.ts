@@ -1,21 +1,26 @@
-import { Post, Body } from '@nestjs/common';
+import { Post, Body, Get } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDTO } from '../auth/dto/login.dto.js';
 import { UsuariosService } from './usuarios.service.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
+import { PacienteResponseDTO } from './dto/paciente-response.dto.js';
+import { RolesUsuarios } from '../common/enums/roles-usuarios.enum.js';
 
 @ApiTags('Usuarios')
 @Controller('usuarios')
 export class UsuariosController {
 
-    constructor(private usuarioService: UsuariosService){}
+    constructor(private usuariosService: UsuariosService) { }
 
-    /*@Post('login') --> Vane: LOGIN lo hace la clase AUTH
-    @ApiOperation({ summary: 'Iniciar sesión como usuario' })
-    @ApiBody({ type: LoginDTO })
-    @ApiResponse({ status: 200, description: 'Inicio de sesión exitoso' })
-    @ApiResponse({ status: 401, description: 'Credenciales inválidas' })
-    async login(@Body() loginDto: LoginDTO) {
-        return this.usuarioService.Login(loginDto.email, loginDto.clave);
-    }*/
+    /**
+       * Listar pacientes activos (solo administrador)
+       */
+    @Roles(RolesUsuarios.ADMINISTRADOR)
+    @Get('pacientes')
+    @ApiOperation({ summary: 'Listar pacientes con estado ACTIVO' })
+    @ApiOkResponse({ type: [PacienteResponseDTO], description: 'Listado de pacientes activos' })
+    async listarPacientes(): Promise<PacienteResponseDTO[]> {
+        return await this.usuariosService.listarPacientes();
+    }
 }

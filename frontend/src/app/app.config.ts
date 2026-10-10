@@ -3,13 +3,27 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './auth/auth-interceptor';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import {
+  DateAdapter,
+  MAT_DATE_LOCALE,
+  MAT_NATIVE_DATE_FORMATS,
+  provideNativeDateAdapter,
+} from '@angular/material/core';
+import { FechaArgentinaAdapter } from './shared/fecha-argentina.adapter';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideAnimationsAsync()
+    provideNativeDateAdapter({
+      ...MAT_NATIVE_DATE_FORMATS,
+      display: {
+        ...MAT_NATIVE_DATE_FORMATS.display,
+        dateInput: { day: '2-digit', month: '2-digit', year: 'numeric' },
+      },
+    }),
+    { provide: MAT_DATE_LOCALE, useValue: 'es-AR' },
+    { provide: DateAdapter, useClass: FechaArgentinaAdapter },
   ]
 };

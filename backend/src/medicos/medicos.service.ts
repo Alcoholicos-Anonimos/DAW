@@ -4,7 +4,8 @@ import { Repository } from 'typeorm';
 import { Medico } from './medicos.entity.js';
 import { Reserva } from '../reservas/reserva.entity.js'; 
 import { EstadosReservas } from '../common/enums/estados-reservas.enum.js';
-
+import { EstadosUsuarios } from '../common/enums/estados-usuarios.enum.js';
+import { MedicoResponseDTO } from './dto/medico-response.dto.js';
 
 @Injectable()
 export class MedicosService {
@@ -21,12 +22,31 @@ export class MedicosService {
         
     }
 
-    async listarMedicos(): Promise<Medico[]> {
-        return await this.medicoRepositorio.find({
+   async listarMedicos(): Promise<MedicoResponseDTO[]> {
+        const medicos = await this.medicoRepositorio.find({
+            where: { usuario: { estado: EstadosUsuarios.ACTIVO } },
             relations: { usuario: true },
             order: { id: 'ASC' },
         });
+
+        return medicos.map((medico) => ({
+            id: medico.id,
+            matricula: medico.matricula,
+            valorConsulta: medico.valorConsulta,
+            valor_consulta: medico.valorConsulta,
+            apellidos: medico.usuario.apellidos,
+            nombres: medico.usuario.nombres,
+            usuario: {
+                id: medico.usuario.id,
+                nombres: medico.usuario.nombres,
+                apellidos: medico.usuario.apellidos,
+                email: medico.usuario.email,
+                documento: medico.usuario.documento,
+                rol: medico.usuario.rol,
+            },
+        }));
     }
+
 
     async actualizarValorConsulta(id: number, nuevoValor: number): Promise<Medico> {
         const medico = await this.medicoRepositorio.findOne({ where: { id } });

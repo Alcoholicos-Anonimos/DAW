@@ -3,14 +3,16 @@ import {
   BadRequestException,
   NotFoundException,
   ForbiddenException,
+  ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Reserva } from './reserva.entity.js';
 import { Medico } from '../medicos/medicos.entity.js';
 import { Usuario } from '../usuarios/usuario.entity.js';
 import { CrearReservaDTO } from './dto/crear-reserva.dto.js';
 import { EstadosReservas } from '../common/enums/estados-reservas.enum.js';
+import { EstadosUsuarios } from '../common/enums/estados-usuarios.enum.js';
 import { RolesUsuarios } from '../common/enums/roles-usuarios.enum.js';
 
 @Injectable()
@@ -44,9 +46,10 @@ export class ReservasService {
       throw new BadRequestException('No se pueden reservar turnos en fechas u horas pasadas');
     }
 
-    // 2. Validar ventana de reserva: máximo 30 días de anticipación
+    // 2. Validar ventana de reserva: máximo 30 días de anticipación (hasta fin del día)
     const limite30Dias = new Date();
-    limite30Dias.setDate(ahora.getDate() + 30);
+    limite30Dias.setDate(limite30Dias.getDate() + 30);
+    limite30Dias.setHours(23, 59, 59, 999);
     if (fechaTurno > limite30Dias) {
       throw new BadRequestException('No se pueden reservar turnos con más de 30 días de anticipación');
     }
@@ -76,10 +79,22 @@ export class ReservasService {
       throw new BadRequestException('El usuario indicado no es un paciente');
     }
 
+    // 4c. Solo los usuarios activos pueden operar en el sistema
+    if (paciente.estado !== EstadosUsuarios.ACTIVO) {
+      throw new BadRequestException('El paciente debe estar activo para reservar un turno');
+    }
+
     // 5. Validar que el médico exista y obtener su valor de consulta actual
-    const medico = await this.medicoRepo.findOne({ where: { id: dto.id_medico } });
+    const medico = await this.medicoRepo.findOne({
+      where: { id: dto.id_medico },
+      relations: { usuario: true },
+    });
     if (!medico) {
       throw new NotFoundException('Médico no encontrado');
+    }
+
+    if (!medico.usuario || medico.usuario.estado !== EstadosUsuarios.ACTIVO) {
+      throw new BadRequestException('El médico debe estar activo para recibir turnos');
     }
 
     // 6. Validar no solapamiento: que el médico no tenga ya un turno ACTIVO en esa fecha y hora
@@ -92,7 +107,7 @@ export class ReservasService {
     });
 
     if (turnoExistente) {
-      throw new BadRequestException('El médico ya tiene un turno reservado en ese horario');
+      throw new ConflictException('El horario seleccionado ya no está disponible');
     }
 
     // 6b. Validar que el paciente no tenga otro turno ACTIVO en esa misma fecha y hora
@@ -201,5 +216,30 @@ export class ReservasService {
     }
 
     return [];
+  }
+
+  /**
+   * Reservas ACTIVAS de un médico en una fecha (horarios ocupados).
+   * Las reservas CANCELADO no bloquean el horario.
+   */
+  async listarReservasPorFecha(fecha: string, idMedico: number): Promise<Reserva[]> {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+      throw new BadRequestException('La fecha debe tener formato YYYY-MM-DD');
+    }
+    const [anio, mes, dia] = fecha.split('-').map(Number);
+    const desde = new Date(anio, mes - 1, dia, 0, 0, 0);
+    const hasta = new Date(anio, mes - 1, dia, 23, 59, 59);
+
+    return await this.reservaRepo.find({
+      where: {
+        medico: { id: idMedico } as any,
+        estado: EstadosReservas.ACTIVO,
+        fechaHora: Between(desde, hasta),
+      },
+      order: { fechaHora: 'ASC' },
+    });
+
+    
+    
   }
 }
