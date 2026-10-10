@@ -45,7 +45,7 @@ export class MedicosService {
 
         const medico = await this.medicoRepositorio.findOne({
             where: { idUsuario: id_usuario },
-            relations: { reservas: true },
+            relations: { reservas: { paciente: true } },
         });
 
         return (medico?.reservas ?? []).filter(reserva => {

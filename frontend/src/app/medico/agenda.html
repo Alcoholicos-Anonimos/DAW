@@ -1,0 +1,74 @@
+<header class="encabezado">
+  <h1>Mis turnos del día</h1>
+
+  <div class="filtro-fecha">
+    <label for="fecha-agenda">Fecha</label>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <input
+        matInput
+        id="fecha-agenda"
+        readonly
+        [matDatepicker]="selector"
+        [formControl]="fecha"
+        (click)="selector.open()"
+        (dateChange)="buscarTurnos()"
+      />
+      <mat-datepicker-toggle matIconSuffix [for]="selector" />
+      <mat-datepicker #selector />
+    </mat-form-field>
+    <button mat-stroked-button type="button" (click)="irAHoy()">Hoy</button>
+  </div>
+</header>
+
+<mat-card class="tarjeta">
+  @if (cargando()) {
+    <div class="carga">
+      <mat-progress-spinner mode="indeterminate" diameter="32" aria-label="Cargando turnos" />
+    </div>
+  } @else if (turnos().length === 0) {
+    <app-empty-state texto="Sin turnos este día" />
+  } @else {
+    <mat-table [dataSource]="turnos()" aria-label="Turnos del día">
+      <ng-container matColumnDef="hora">
+        <mat-cell *matCellDef="let t" class="celda-hora">
+          {{ t.fechaHora | date: 'HH:mm' }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="paciente">
+        <mat-cell *matCellDef="let t" class="celda-paciente">
+          <span class="paciente-nombre">{{ t.paciente.nombres }} {{ t.paciente.apellidos }}</span>
+          <span class="paciente-dni">DNI {{ t.paciente.documento }}</span>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="acciones">
+        <mat-cell *matCellDef="let t" class="celda-acciones">
+          <app-estado-chip [estado]="t.estado" />
+
+          @if (t.estado === Estados.ACTIVO) {
+            <button
+              mat-flat-button
+              type="button"
+              [disabled]="procesando() === t.id"
+              (click)="marcar(t, Estados.ATENDIDO)"
+            >
+              Marcar atendido
+            </button>
+            <button
+              mat-stroked-button
+              class="btn-ausente"
+              type="button"
+              [disabled]="procesando() === t.id"
+              (click)="marcar(t, Estados.AUSENTE)"
+            >
+              Marcar ausente
+            </button>
+          }
+        </mat-cell>
+      </ng-container>
+
+      <mat-row *matRowDef="let fila; columns: columnas"></mat-row>
+    </mat-table>
+  }
+</mat-card>

@@ -1,0 +1,85 @@
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.encabezado h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.filtro-fecha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filtro-fecha label {
+  font-weight: 500;
+}
+
+.filtro-fecha mat-form-field {
+  width: 190px;
+}
+
+.filtro-fecha input {
+  cursor: pointer;
+}
+
+.tarjeta {
+  padding: 8px 28px;
+  border-radius: 20px;
+}
+
+.carga {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+mat-row {
+  min-height: 84px;
+  gap: 16px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+mat-row:last-of-type {
+  border-bottom: none;
+}
+
+.celda-hora {
+  flex: 0 0 88px;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.celda-paciente {
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+}
+
+.paciente-nombre {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.paciente-dni {
+  font-size: 0.9rem;
+  color: var(--clinica-muted);
+}
+
+.celda-acciones {
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
