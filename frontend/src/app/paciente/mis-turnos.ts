@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ViewChild, AfterViewInit, signal, Signal } from "@angular/core";
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -14,7 +14,9 @@ import { MonedaPipe } from '../shared/pipes/moneda.pipe';
 import { EstadosReservas } from '../shared/estados-reservas.enum';
 import { ConfirmDialog } from '../shared/confirm-dialog/confirm-dialog';
 import { MatDialog } from "@angular/material/dialog";
-import {MatDividerModule} from '@angular/material/divider';
+import { MatDividerModule } from '@angular/material/divider';
+import { AuthStore } from "../auth/auth-store";
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
     selector: "app-mis-turnos",
@@ -32,22 +34,38 @@ import {MatDividerModule} from '@angular/material/divider';
         MatDividerModule,
         FormsModule,
         ChipEstado,
-        MonedaPipe, 
+        MonedaPipe,
         ConfirmDialog
     ]
 })
 export class MisTurnos {
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
     private pacienteService = inject(PacienteService);
+    titulo = signal('Mis turnos');
     turnos = new MatTableDataSource<any>([]);
     estados = ['TODOS', ...Object.values(EstadosReservas)];
     selectedValue = 'TODOS';
     todosLosTurnos: any[] = [];
     private dialog = inject(MatDialog);
 
+    private readonly authStore = inject(AuthStore);
+    readonly esAdmin = this.authStore.obtenerRol() === 'ADMINISTRADOR';
+    readonly columnas: string[] = this.esAdmin
+        ? ['fechaHora', 'paciente', 'medico', 'valorConsulta', 'estado', 'accion']
+        : ['fechaHora', 'medico', 'valorConsulta', 'estado', 'accion'];
+
     ngOnInit(): void {
         this.buscarTurnos();
+        if (this.esAdmin) {
+            this.titulo.set('Turnos de pacientes');
+        } else {
+            this.titulo.set('Mis turnos');
+        }
     }
 
+    ngAfterViewInit(): void {
+        this.turnos.paginator = this.paginator;
+    }
     buscarTurnos() {
         this.pacienteService.getTurnos().subscribe((data: any) => {
             this.todosLosTurnos = data;
@@ -58,13 +76,15 @@ export class MisTurnos {
     filtrarTurnos() {
         if (this.selectedValue === 'TODOS') {
             this.turnos.data = this.todosLosTurnos;
-            return;
+        } else {
+            this.turnos.data = this.todosLosTurnos.filter(
+                t => t.estado === this.selectedValue
+            );
         }
 
-        this.turnos.data = this.todosLosTurnos.filter(
-            t => t.estado === this.selectedValue
-        );
+        this.turnos.paginator?.firstPage();
     }
+
     puedeCancelarPaciente(t: any): boolean {
         if (t.estado !== 'ACTIVO') return false;
 
@@ -79,24 +99,24 @@ export class MisTurnos {
 
     confirmarCancelar(t: any) {
 
-    const dialogRef = this.dialog.open(ConfirmDialog, {
-        width: '400px',
-        data: {
-            titulo: 'Cancelar turno',
-            mensaje: '¿Está seguro de que desea cancelar este turno?',
-            textoConfirmar: 'Sí, cancelar',
-            textoCancelar: 'No'
-        }
-    });
+        const dialogRef = this.dialog.open(ConfirmDialog, {
+            width: '400px',
+            data: {
+                titulo: 'Cancelar turno',
+                mensaje: '¿Está seguro de que desea cancelar este turno?',
+                textoConfirmar: 'Sí, cancelar',
+                textoCancelar: 'No'
+            }
+        });
 
-    dialogRef.afterClosed().subscribe((confirmado) => {
+        dialogRef.afterClosed().subscribe((confirmado) => {
 
-        if (confirmado) {
-            this.pacienteService.cancelarReserva(t.id).subscribe(() => {
-                this.buscarTurnos();
-            });
-        }
+            if (confirmado) {
+                this.pacienteService.cancelarReserva(t.id).subscribe(() => {
+                    this.buscarTurnos();
+                });
+            }
 
-    });
-}
+        });
+    }
 }

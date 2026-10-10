@@ -1,0 +1,134 @@
+<h1>Reservar turno</h1>
+
+<p>Complete los datos del turno para reservarlo.</p>
+
+<form class="pantalla" [formGroup]="form" (ngSubmit)="reservar()">
+
+  <mat-card class="datos">
+    <mat-card-header>
+      <mat-card-title>Datos del turno</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Médico</mat-label>
+        <mat-select formControlName="medico" (ngModelChange)="consultarOcupados()">
+          @for (medico of medicos; track medico.id) {
+            <mat-option [value]="medico.id" >
+              Dr. {{ medico.nombres }} {{ medico.apellidos }} · Matrícula {{ medico.matricula }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      @if (esAdmin) {
+        <mat-form-field appearance="outline">
+          <mat-label>Paciente</mat-label>
+          <mat-select formControlName="paciente">
+            <mat-option [value]="null">Seleccionar paciente</mat-option>
+            @for (paciente of pacientes; track paciente.id) {
+              <mat-option [value]="paciente.id">
+                {{ paciente.apellidos }} {{ paciente.nombres }} · Doc. {{ paciente.documento }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          formControlName="fecha"
+          [min]="hoy"
+          [max]="maxFecha"
+          (dateChange)="consultarOcupados()"
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker" />
+        <mat-datepicker #picker></mat-datepicker>
+        @if (form.get('fecha')?.hasError('matDatepickerParse')) {
+          <mat-error>Formato de fecha inválido. Use dd/mm/aaaa.</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="horarios">
+        <p class="seccion-titulo">Horarios</p>
+        <div class="grilla-horarios">
+          @for (horario of horarios; track horario) {
+            <button
+              type="button"
+              mat-stroked-button
+              [class.seleccionado]="horaSeleccionada() === horario"
+              [disabled]="horarioDeshabilitado(horario)"
+              (click)="seleccionarHora(horario)"
+            >
+              {{ horario }}
+            </button>
+          }
+        </div>
+        <p class="ayuda">Los horarios ocupados aparecen deshabilitados.</p>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="resumen">
+    <mat-card-header>
+      <mat-card-title>Resumen</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+
+      <div class="fila">
+        <span class="etiqueta">Médico:</span>
+        <span class="valor">{{ resumenMedico }}</span>
+      </div>
+
+      <div class="fila">
+        <span class="etiqueta">Valor de consulta:</span>
+        <span class="valor">
+          @if (medicoSeleccionado; as medico) {
+            {{ medico.valor_consulta | moneda }}
+          } @else {
+            —
+          }
+        </span>
+      </div>
+
+      <div class="fila">
+        <span class="etiqueta">Fecha:</span>
+        <span class="valor">
+          @if (form.value.fecha; as fecha) {
+            {{ fecha | date: 'dd/MM/yyyy' }}
+          } @else {
+            —
+          }
+        </span>
+      </div>
+
+      <div class="fila">
+        <span class="etiqueta">Hora:</span>
+        <span class="valor">{{ horaSeleccionada() ?? '—' }}</span>
+      </div>
+
+      @if (esAdmin) {
+        <div class="fila">
+          <span class="etiqueta">Paciente:</span>
+          <span class="valor">{{ resumenPaciente }}</span>
+        </div>
+      }
+
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="form.invalid || !horaSeleccionada || enviando"
+      >
+        Reservar turno
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+</form>

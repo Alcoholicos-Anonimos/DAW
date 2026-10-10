@@ -1,13 +1,100 @@
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.encabezado h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.encabezado p {
+  margin: 8px 0 0;
+}
+
 .filtro-estados {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.filtro-estados p {
-  margin: 0;
+.filtro-estados label {
+  font-weight: 500;
 }
 
-.filtro-estados mat-select {
-  width: 200px;
+.filtro-estados mat-form-field {
+  width: 190px;
+}
+
+.tarjeta {
+  padding: 8px 28px;
+  border-radius: 20px;
+}
+
+mat-header-row {
+  min-height: 48px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+mat-header-cell {
+  font-weight: 700;
+  color: var(--clinica-muted);
+}
+
+mat-row {
+  min-height: 84px;
+  gap: 16px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+mat-row:last-of-type {
+  border-bottom: none;
+}
+
+.celda-fecha {
+  flex: 0 0 180px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.celda-persona {
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+}
+
+.persona-nombre {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.celda-valor {
+  flex: 0 0 100px;
+  justify-content: center;
+}
+
+.celda-estado {
+  flex: 0 0 130px;
+  justify-content: center;
+}
+
+.celda-acciones {
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+mat-card-footer p {
+  margin: 16px 0 8px;
+  color: var(--clinica-muted);
+  font-size: 0.9rem;
 }

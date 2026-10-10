@@ -1,13 +1,18 @@
 
 import { ApiProperty } from '@nestjs/swagger';
 import { EstadosReservas } from '../../common/enums/estados-reservas.enum.js';
+import { formatearFechaLocal } from '../../common/fecha-local.js';
+import { Transform } from 'class-transformer';
 
 export class ReservaResponseDTO {
   @ApiProperty({ example: 1 })
   id: number;
 
-  @ApiProperty({ example: '2026-09-15T10:00:00.000Z' })
-  fechaHora: Date;
+  @ApiProperty({ example: '2026-09-15T10:00:00' })
+   @Transform(({ value }) =>
+    value instanceof Date ? formatearFechaLocal(value) : value,
+  )
+  fechaHora: string;
 
   @ApiProperty({ enum: EstadosReservas, example: 'ACTIVO' })
   estado: EstadosReservas;

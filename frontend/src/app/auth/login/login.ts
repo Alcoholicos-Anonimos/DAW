@@ -29,12 +29,10 @@ export class Login {
     protected readonly title = signal('Acme');
 
     private readonly snackBar: MatSnackBar = inject(MatSnackBar);
-
     private readonly loginApiClient: LoginApiClient = inject(LoginApiClient);
-
     private readonly authStore: AuthStore = inject(AuthStore);
-
     private readonly router: Router = inject(Router)
+    private rol: string | null = null;
 
     verClave = false;
 
@@ -46,7 +44,7 @@ export class Login {
     mostrarError(mensaje: string) {
         this.snackBar.open(mensaje, "Cerrar", { duration: 5000 });
     }
-    
+
     iniciarSesion() {
 
         if (!this.form.valid) {
@@ -59,13 +57,21 @@ export class Login {
         const clave: string = this.form.value.clave;
 
         this.loginApiClient.iniciarSesion(email, clave).subscribe({
-            next: (res)=>{
+            next: (res) => {
                 this.authStore.guardarToken(res.accessToken);
-                this.router.navigateByUrl("/reservas");
+                this.rol = this.authStore.obtenerRol();
+                switch (this.rol) {
+                    case 'PACIENTE':
+                        this.router.navigateByUrl("/paciente/mis-turnos"); break;
+                    case 'MEDICO':
+                        this.router.navigateByUrl("/medico/agenda"); break;
+                    case 'ADMINISTRADOR':
+                        this.router.navigateByUrl("/admin/reservar"); break;
+                }
+
             },
-            error: (err)=>{
-                 this.mostrarError(err.error)
-                //this.mostrarError("Ha ocurrido un error al iniciar sesión. Verifique las credenciales ingresadas")
+            error: (err) => {
+                this.mostrarError("Ha ocurrido un error al iniciar sesión. Verifique las credenciales ingresadas")
             }
         });
 

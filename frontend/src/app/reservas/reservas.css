@@ -1,12 +1,66 @@
-* {
-color:black;
-width: 100%;
-width: 100%;
-    /*min-height: 100%;*/
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-    box-sizing: inherit;
-    position: relative;
+.pantalla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+mat-card mat-form-field {
+  width: 100%;
+}
+
+.horarios {
+  margin-top: 8px;
+}
+
+.seccion-titulo {
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
+.grilla-horarios {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(70px, 1fr));
+  gap: 8px;
+}
+
+.grilla-horarios button.seleccionado {
+  background-color: var(--clinica-primary);
+  --mat-button-outlined-label-text-color: #ffffff;
+  --mat-button-outlined-outline-color: var(--clinica-primary);
+  --mat-button-outlined-state-layer-color: transparent;
+  --mat-button-outlined-ripple-color: transparent;
+}
+
+.ayuda {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--clinica-muted);
+}
+
+.fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--clinica-line);
+}
+
+.fila:last-of-type {
+  border-bottom: none;
+}
+
+.fila .etiqueta {
+  font-weight: 600;
+}
+
+.fila .valor {
+  text-align: right;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
