@@ -5,13 +5,13 @@ import { AuthGuard } from './auth/auth-guard';
 import { RoleGuard } from './auth/role-guard';
 import { Layout } from './shared/layout/layout';
 import { MisTurnos } from './paciente/mis-turnos';
+import { Agenda } from './medico/agenda';
 
 /*
 import { Medicos } from './medicos/medicos';
 
 import { MisTurnos } from './paciente/mis-turnos/mis-turnos';
 import { Reservar } from './reservas/reservar/reservar';
-import { Agenda } from './medico/agenda/agenda';
 import { Valor } from './admin/valor-consulta/valor-consulta';*/
 
 export const routes: Routes = [
@@ -50,10 +50,10 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['MEDICO'] },
     children: [
-     /* {
+     {
         path: 'agenda',
         component: Agenda
-      }*/
+      }
     ]
   },
 
