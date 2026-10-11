@@ -14,9 +14,6 @@ export class MedicoResponseDTO {
   @ApiProperty({ example: 12345 })
   matricula!: number;
 
-  @ApiProperty({ example: 15000 })
-  valorConsulta!: number;
-
   @ApiProperty({ example: 15000, description: 'Valor de consulta vigente (lo consume el frontend)' })
   valor_consulta!: number;
 
