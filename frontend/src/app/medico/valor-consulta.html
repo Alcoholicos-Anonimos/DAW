@@ -1,0 +1,60 @@
+<header class="encabezado">
+    <h1>Valor de consulta</h1>
+</header>
+
+<mat-card class="tarjeta">
+    <mat-table [dataSource]="medicos()">
+
+        <!-- Médico -->
+        <ng-container matColumnDef="medico">
+            <mat-header-cell *matHeaderCellDef>
+                Médico
+            </mat-header-cell>
+            <mat-cell *matCellDef="let t">
+                Dr. {{ t.nombres }} {{ t.apellidos }} · Matrícula {{ t.matricula }}
+            </mat-cell>
+        </ng-container>
+
+        <!-- Valor actual -->
+        <ng-container matColumnDef="valor_consulta">
+            <mat-header-cell *matHeaderCellDef>
+                Valor actual
+            </mat-header-cell>
+            <mat-cell *matCellDef="let t">
+                {{ t.valor_consulta | moneda }}
+            </mat-cell>
+        </ng-container>
+
+        <!-- Nuevo valor -->
+        <ng-container matColumnDef="nuevoValor">
+            <mat-header-cell *matHeaderCellDef>
+                Nuevo valor
+            </mat-header-cell>
+            <mat-cell *matCellDef="let t">
+                <mat-form-field appearance="outline">
+                    <mat-label>Nuevo valor ($)</mat-label>
+                    <input matInput type="number" min="0" [formControl]="control(t.id)" />
+                    @if (control(t.id).hasError('required') && control(t.id).touched) {
+                    <mat-error>Ingresá un valor</mat-error>
+                    }
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="acciones">
+            <mat-header-cell *matHeaderCellDef>
+                Acciones
+            </mat-header-cell>
+            <mat-cell *matCellDef="let t" class="celda-acciones">
+                <button mat-flat-button type="button" [disabled]="control(t.id).invalid" (click)="guardar(t)">
+                    Guardar
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+        <mat-row *matRowDef="let fila; columns: columnas"></mat-row>
+
+    </mat-table>
+</mat-card>
