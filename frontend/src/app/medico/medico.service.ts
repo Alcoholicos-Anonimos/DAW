@@ -2,31 +2,11 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { EstadosReservas } from '../shared/estados-reservas.enum';
+import { Medico } from  '../shared/interfaces';
+import { MarcarTurnoRespuesta, TurnoAgenda } from '../shared/interfaces';
 
 /** Estados a los que el médico puede pasar un turno ACTIVO. */
 export type EstadoMarcable = EstadosReservas.ATENDIDO | EstadosReservas.AUSENTE;
-
-export interface PacienteTurno {
-  id: number;
-  documento: string;
-  apellidos: string;
-  nombres: string;
-}
-
-/** Turno tal como lo devuelve GET /medicos/lista-turnos (reserva + paciente). */
-export interface TurnoAgenda {
-  id: number;
-  fechaHora: string;
-  estado: EstadosReservas;
-  valorConsulta: number;
-  paciente: PacienteTurno;
-}
-
-/** Respuesta de POST /medicos/marcar-turno. */
-export interface MarcarTurnoRespuesta {
-  reserva: TurnoAgenda;
-  estado: EstadosReservas;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -46,5 +26,13 @@ export class MedicoService {
       id_reserva: idReserva,
       estado,
     });
+  }
+
+  listarMedicos(): Observable<Medico[]> {
+    return this.httpClient.get<Medico[]>('/api/v1/medicos');
+  }
+
+  actualizarValorConsulta(medicoId: number, nuevoValor: number): Observable<any> {
+    return this.httpClient.patch<any>(`/api/v1/medicos/${medicoId}`, { valorConsulta: nuevoValor });
   }
 }

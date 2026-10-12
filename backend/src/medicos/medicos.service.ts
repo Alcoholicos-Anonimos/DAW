@@ -32,7 +32,6 @@ export class MedicosService {
         return medicos.map((medico) => ({
             id: medico.id,
             matricula: medico.matricula,
-            valorConsulta: medico.valorConsulta,
             valor_consulta: medico.valorConsulta,
             apellidos: medico.usuario.apellidos,
             nombres: medico.usuario.nombres,
