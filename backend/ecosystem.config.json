@@ -11,7 +11,7 @@
             "DB_NAME": "clinica",
             "DB_LOGGING":"clinica",
             "SWAGGER_HABILITADO":false,
-            "JWT_SECRET": ""
+            "JWT_SECRET": "2af1811decbd04fb7b9debf94951d7a17f3af4512f21f185e50862842aefec73ef5509155d3becbeba3376ff701f8dbf"
         },
     "time":true
     }
