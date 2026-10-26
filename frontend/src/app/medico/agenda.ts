@@ -21,8 +21,8 @@ import { ChipEstado } from '../shared/chip-estado/chip-estado';
 import { ConfirmDialogService } from '../shared/confirm-dialog/confirm-dialog.service';
 import { EmptyState } from '../shared/empty-state/empty-state';
 import { EstadosReservas } from '../shared/estados-reservas.enum';
-import { EstadoMarcable, MedicoService, TurnoAgenda } from './medico.service';
-
+import { EstadoMarcable, MedicoService } from './medico.service';
+import { TurnoAgenda } from '../shared/interfaces' 
 // Fecha en el campo como dd/mm/aaaa (el formato por defecto muestra d/m/aaaa).
 const FORMATO_FECHA: MatDateFormats = {
   ...MAT_NATIVE_DATE_FORMATS,
