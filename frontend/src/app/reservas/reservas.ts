@@ -11,8 +11,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthStore } from '../auth/auth-store';
 import { MonedaPipe } from '../shared/pipes/moneda.pipe';
-import { CrearReserva, Medico, Paciente, ReservasApiClient } from './reservas-api-client';
-
+import { ReservasApiClient } from './reservas-api-client';
+import { CrearReserva, Medico, Paciente } from '../shared/interfaces';
 
 function inicioDeDia(fecha: Date): Date {
   return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
@@ -146,8 +146,8 @@ export class Reservas {
     });
   }
 
-   consultarOcupados(): void {
-    
+  consultarOcupados(): void {
+
     const idMedico = this.form.value.medico;
     const fecha = this.form.value.fecha;
 
@@ -158,7 +158,7 @@ export class Reservas {
     }
 
     this.reservasApiClient.listarOcupados(this.formatearFecha(fecha), idMedico).subscribe((reservas) => {
-        this.horasOcupadas.set(
+      this.horasOcupadas.set(
         new Set(reservas.map((r) => this.horaDeReserva(r.fechaHora))),
       );
 

@@ -6,6 +6,7 @@ import { RoleGuard } from './auth/role-guard';
 import { Layout } from './shared/layout/layout';
 import { MisTurnos } from './paciente/mis-turnos';
 import { Agenda } from './medico/agenda';
+import { ValorConsulta } from './medico/valor-consulta';
 
 /* para pantalla 5: import { Valor } from './admin/valor-consulta/valor-consulta';*/
 
@@ -21,7 +22,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['PACIENTE'] },
     children: [
-     {
+      {
         path: 'mis-turnos',
         component: MisTurnos
       },
@@ -38,7 +39,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['MEDICO'] },
     children: [
-     {
+      {
         path: 'agenda',
         component: Agenda
       }
@@ -55,15 +56,14 @@ export const routes: Routes = [
         path: 'reservar',
         component: Reservas
       },
-       {
+      {
         path: 'mis-turnos',
         component: MisTurnos
-      }
-
-     /* {
+      }, 
+      {
         path: 'valor-consulta',
-        component: Valor
-      }*/
+        component: ValorConsulta
+      }
     ]
   },
 
